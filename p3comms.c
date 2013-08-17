@@ -250,26 +250,26 @@ P3Init( int port, p3mode mode, int debug_flag, long baud )
         {
         // Note which serial port we aree using
         MyComms->port    = port;
-		MyComms->baud    = baud;
+        MyComms->baud    = baud;
         MyComms->mode    = mode;
         MyComms->state   = kP3StateIdle;
 
         MyComms->debug   = debug_flag;
 
-		// set off by default
+        // set off by default
         MyComms->DebugRx = 0;
-		MyComms->DebugTx = 0;
+        MyComms->DebugTx = 0;
 
-		// no char waiting
-		MyComms->peekChar = (-1);
+        // no char waiting
+        MyComms->peekChar = (-1);
 
-		// clear strings
-		for(i=0;i<MANUFACTURER_STRING_LEN;i++)
-		    MyComms->manufacturer[i] = 0;
-		for(i=0;i<PRODUC_TNAME_STRING_LEN;i++)
-		    MyComms->product_name[i] = 0;
-		for(i=0;i<SERIAL_NUMBER_STRING_LEN;i++)
-		    MyComms->serial_number[i] = 0;
+        // clear strings
+        for(i=0;i<MANUFACTURER_STRING_LEN;i++)
+            MyComms->manufacturer[i] = 0;
+        for(i=0;i<PRODUC_TNAME_STRING_LEN;i++)
+            MyComms->product_name[i] = 0;
+        for(i=0;i<SERIAL_NUMBER_STRING_LEN;i++)
+            MyComms->serial_number[i] = 0;
 
         // Init the serial port here
         P3InitSerial( MyComms );
@@ -333,11 +333,11 @@ P3InitSerial(p3comms *MyComms)
 void
 P3SetManufacturerString( p3comms *MyComms, char *str )
 {
-	int     i;
-	char    *p = str;
+    int     i;
+    char    *p = str;
 
-	// copy string
-	for(i=0;(i<MANUFACTURER_STRING_LEN-1) && (*p!=0);i++)
+    // copy string
+    for(i=0;(i<MANUFACTURER_STRING_LEN-1) && (*p!=0);i++)
         MyComms->manufacturer[i] = *p++;
 
     // make sure we are null terminated if the string was truncated
@@ -350,11 +350,11 @@ P3SetManufacturerString( p3comms *MyComms, char *str )
 void
 P3SetProductNameString( p3comms *MyComms, char *str )
 {
-	int     i;
-	char    *p = str;
+    int     i;
+    char    *p = str;
 
-	// copy string
-	for(i=0;(i<PRODUC_TNAME_STRING_LEN-1) && (*p!=0);i++)
+    // copy string
+    for(i=0;(i<PRODUC_TNAME_STRING_LEN-1) && (*p!=0);i++)
         MyComms->product_name[i] = *p++;
 
     // make sure we are null terminated if the string was truncated
@@ -367,11 +367,11 @@ P3SetProductNameString( p3comms *MyComms, char *str )
 void
 P3SetSerialNumberString( p3comms *MyComms, char *str )
 {
-	int     i;
-	char    *p = str;
+    int     i;
+    char    *p = str;
 
-	// copy string
-	for(i=0;(i<SERIAL_NUMBER_STRING_LEN-1) && (*p!=0);i++)
+    // copy string
+    for(i=0;(i<SERIAL_NUMBER_STRING_LEN-1) && (*p!=0);i++)
         MyComms->serial_number[i] = *p++;
 
     // make sure we are null terminated if the string was truncated
@@ -387,7 +387,7 @@ P3SetFirmwareVersion( p3comms *MyComms, unsigned char major, unsigned char minor
     MyComms->firmware_version[0] = major;
     MyComms->firmware_version[1] = minor;
     MyComms->firmware_version[2] = bug;
-	MyComms->firmware_version[3] = (build >> 8) & 0xFF;
+    MyComms->firmware_version[3] = (build >> 8) & 0xFF;
     MyComms->firmware_version[4] = (build     ) & 0xFF;
 }
 
@@ -602,7 +602,7 @@ P3ReceivePacket( p3comms *MyComms )
             case    2:
                 RxPak->command.cmdpak.cmd.cmd1 = MyComms->rxbuf[i]; // don;t mask now
                 RxPak->dev_id  = MyComms->rxbuf[i] & 0x0F;
-				RxPak->masked_cmd1 = (MyComms->rxbuf[i] >> 4) & 0x0F;
+                RxPak->masked_cmd1 = (MyComms->rxbuf[i] >> 4) & 0x0F;
                 RxPak->chk_sum = RxPak->chk_sum ^ MyComms->rxbuf[i];
                 RxPak->cmd_cnt++;
                 break;
@@ -638,8 +638,8 @@ P3ReceivePacket( p3comms *MyComms )
 
             if( RxPak->chk_sum != 0 )
                 {
-			    // 2-April-13, only nak if we are slave
-			    // checksum error
+                // 2-April-13, only nak if we are slave
+                // checksum error
                 if( MyComms->mode == kP3ModeSlave )
                     P3Command(MyComms, &Cmd_Nak_Chksum , RxPak->dev_id );
                 }
@@ -678,13 +678,13 @@ P3DecodePacket( p3comms *MyComms, p3pak *packet )
     p3cmdfull   *cmd = &packet->command.cmdpak.cmd;
     int         ret = 0;
 
-	// Decoding in device specific code
-	// If this returns positive then the command was handled
+    // Decoding in device specific code
+    // If this returns positive then the command was handled
     ret = P3UserDecodePacket( MyComms, packet );
 
     // Did user code handle the packet
     if(ret > 0)
-	    return;
+        return;
 
     // Standard processing of common known commands
     switch( packet->masked_cmd1 )
@@ -694,12 +694,12 @@ P3DecodePacket( p3comms *MyComms, p3pak *packet )
             break;
 
         case    CMD1_GROUP_SYSTEM_REPLY:
-		    P3DecodeSysReply( MyComms, packet );
-		    break;
+            P3DecodeSysReply( MyComms, packet );
+            break;
 
         default:
             // Nak - undefined command
-		    P3Command(MyComms, &Cmd_Nak_Und, packet->dev_id  );
+            P3Command(MyComms, &Cmd_Nak_Und, packet->dev_id  );
             break;
         }
 }
@@ -713,55 +713,55 @@ P3DecodeSysCtl( p3comms *MyComms, p3pak *packet )
 {
     p3cmdfull   *cmd = &packet->command.cmdpak.cmd;
 
-	//only action these if slave
+    //only action these if slave
     if( MyComms->mode == kP3ModeMaster )
         return;
 
     switch( cmd->cmd2 )
         {
         case    CMD2_SYSTEM_DEVICE_TYPE:
-		    // Dev type request
+            // Dev type request
             Cmd_Dev_Type_Reply.data[0] = MyComms->deviceType[0];
             Cmd_Dev_Type_Reply.data[1] = MyComms->deviceType[1];
-			P3Command(MyComms, &Cmd_Dev_Type_Reply, packet->dev_id  );
+            P3Command(MyComms, &Cmd_Dev_Type_Reply, packet->dev_id  );
             break;
 
         case    CMD2_SYSTEM_MANUFACTURER:
-		    // manufacturer request
-		    Cmd_Manufacturer_Reply.length = strlen( (char *)MyComms->manufacturer ) + 1;
-			strncpy( (char *)Cmd_Manufacturer_Reply.data, (char *)MyComms->manufacturer, Cmd_Manufacturer_Reply.length );
-			P3Command(MyComms, &Cmd_Manufacturer_Reply, packet->dev_id  );
-			break;
+            // manufacturer request
+            Cmd_Manufacturer_Reply.length = strlen( (char *)MyComms->manufacturer ) + 1;
+            strncpy( (char *)Cmd_Manufacturer_Reply.data, (char *)MyComms->manufacturer, Cmd_Manufacturer_Reply.length );
+            P3Command(MyComms, &Cmd_Manufacturer_Reply, packet->dev_id  );
+            break;
 
         case    CMD2_SYSTEM_PRODUCT_NAME:
-		    // product name request
-		    Cmd_ProductName_Reply.length = strlen( (char *)MyComms->product_name ) + 1;
-			strncpy( (char *)Cmd_ProductName_Reply.data, (char *)MyComms->product_name, Cmd_ProductName_Reply.length );
-			P3Command(MyComms, &Cmd_ProductName_Reply, packet->dev_id  );
-			break;
+            // product name request
+            Cmd_ProductName_Reply.length = strlen( (char *)MyComms->product_name ) + 1;
+            strncpy( (char *)Cmd_ProductName_Reply.data, (char *)MyComms->product_name, Cmd_ProductName_Reply.length );
+            P3Command(MyComms, &Cmd_ProductName_Reply, packet->dev_id  );
+            break;
 
         case    CMD2_SYSTEM_SERIAL_NUM:
-		    // serial number request
-		    Cmd_SerialNumber_Reply.length = strlen( (char *)MyComms->serial_number ) + 1;
-			strncpy( (char *)Cmd_SerialNumber_Reply.data, (char *)MyComms->serial_number, Cmd_SerialNumber_Reply.length );
-			P3Command(MyComms, &Cmd_SerialNumber_Reply, packet->dev_id  );
-			break;
+            // serial number request
+            Cmd_SerialNumber_Reply.length = strlen( (char *)MyComms->serial_number ) + 1;
+            strncpy( (char *)Cmd_SerialNumber_Reply.data, (char *)MyComms->serial_number, Cmd_SerialNumber_Reply.length );
+            P3Command(MyComms, &Cmd_SerialNumber_Reply, packet->dev_id  );
+            break;
 
-		case    CMD2_SYSTEM_FIRMWARE:
-		    // firmware version
-		    strncpy( (char *)Cmd_FirmwareVersion_Reply.data, (char *)MyComms->firmware_version, Cmd_FirmwareVersion_Reply.length );
-			P3Command(MyComms, &Cmd_FirmwareVersion_Reply, packet->dev_id  );
-			break;
+        case    CMD2_SYSTEM_FIRMWARE:
+            // firmware version
+            strncpy( (char *)Cmd_FirmwareVersion_Reply.data, (char *)MyComms->firmware_version, Cmd_FirmwareVersion_Reply.length );
+            P3Command(MyComms, &Cmd_FirmwareVersion_Reply, packet->dev_id  );
+            break;
 
- 		case    CMD2_SYSTEM_HARDWARE:
-		    // hardware version
-		    strncpy( (char *)Cmd_HardwareVersion_Reply.data,(char *) MyComms->hardware_version, Cmd_HardwareVersion_Reply.length );
-			P3Command(MyComms, &Cmd_HardwareVersion_Reply, packet->dev_id  );
-			break;
+        case    CMD2_SYSTEM_HARDWARE:
+            // hardware version
+            strncpy( (char *)Cmd_HardwareVersion_Reply.data,(char *) MyComms->hardware_version, Cmd_HardwareVersion_Reply.length );
+            P3Command(MyComms, &Cmd_HardwareVersion_Reply, packet->dev_id  );
+            break;
 
         default:
-		    // Nak - undefined command
-		    P3Command(MyComms, &Cmd_Nak_Und, packet->dev_id  );
+            // Nak - undefined command
+            P3Command(MyComms, &Cmd_Nak_Und, packet->dev_id  );
             break;
         }
 }
@@ -783,49 +783,49 @@ P3DecodeSysReply( p3comms *MyComms, p3pak *packet )
     switch( cmd->cmd2 )
         {
         case    CMD2_SYSTEM_ACK:   // ACK
-  		case    CMD2_SYSTEM_NAK:   // NAK
-		    break;
+        case    CMD2_SYSTEM_NAK:   // NAK
+            break;
 
-		case    CMD2_SYSTEM_DEVICE_TYPE:
-		    // Dev type reply
-		    MyComms->deviceType[0] = packet->command.cmdpak.cmd.data[0];
-		    MyComms->deviceType[1] = packet->command.cmdpak.cmd.data[1];
+        case    CMD2_SYSTEM_DEVICE_TYPE:
+            // Dev type reply
+            MyComms->deviceType[0] = packet->command.cmdpak.cmd.data[0];
+            MyComms->deviceType[1] = packet->command.cmdpak.cmd.data[1];
             break;
 
 
         case   CMD2_SYSTEM_MANUFACTURER:
-		    // Manufacturer string
-		    len = packet->command.cmdpak.cmd.length;
-			if( len > 31 )
-			    len = 31;
-		    strncpy( (char *)MyComms->manufacturer, (char *)packet->command.cmdpak.cmd.data, len );
-			break;
+            // Manufacturer string
+            len = packet->command.cmdpak.cmd.length;
+            if( len > 31 )
+                len = 31;
+            strncpy( (char *)MyComms->manufacturer, (char *)packet->command.cmdpak.cmd.data, len );
+            break;
 
        case   CMD2_SYSTEM_PRODUCT_NAME:
-	        // product name string
-		    len = packet->command.cmdpak.cmd.length;
-			if( len > 31 )
-			    len = 31;
-		    strncpy( (char *)MyComms->product_name, (char *)packet->command.cmdpak.cmd.data, len );
-			break;
+            // product name string
+            len = packet->command.cmdpak.cmd.length;
+            if( len > 31 )
+                len = 31;
+            strncpy( (char *)MyComms->product_name, (char *)packet->command.cmdpak.cmd.data, len );
+            break;
 
        case   CMD2_SYSTEM_SERIAL_NUM:
-	        // serial number string
-		    len = packet->command.cmdpak.cmd.length;
-			if( len > 31 )
-			    len = 31;
-		    strncpy( (char *)MyComms->serial_number, (char *)packet->command.cmdpak.cmd.data, len );
-			break;
+            // serial number string
+            len = packet->command.cmdpak.cmd.length;
+            if( len > 31 )
+                len = 31;
+            strncpy( (char *)MyComms->serial_number, (char *)packet->command.cmdpak.cmd.data, len );
+            break;
 
-		case CMD2_SYSTEM_FIRMWARE:
-		    // firmware version
-		    strncpy( (char *)MyComms->firmware_version, (char *)packet->command.cmdpak.cmd.data, 5 );
-			break;
+        case CMD2_SYSTEM_FIRMWARE:
+            // firmware version
+            strncpy( (char *)MyComms->firmware_version, (char *)packet->command.cmdpak.cmd.data, 5 );
+            break;
 
         case CMD2_SYSTEM_HARDWARE:
-		    // hardware version
-		    strncpy( (char *)MyComms->hardware_version, (char *)packet->command.cmdpak.cmd.data, 5 );
-			break;
+            // hardware version
+            strncpy( (char *)MyComms->hardware_version, (char *)packet->command.cmdpak.cmd.data, 5 );
+            break;
 
         default:
             break;

@@ -103,7 +103,7 @@ typedef struct _p3packet {
     short           cmd_len;
     unsigned char   chk_sum;
     unsigned char   dev_id;
-	unsigned char   masked_cmd1;
+    unsigned char   masked_cmd1;
     } p3pak;
 
 #define P3_BAUD                     baudRate115200
@@ -162,7 +162,7 @@ typedef enum  {
 // communicatuoibs channel
 typedef struct _p3comms {
     int             port;       // which Uart
-	long            baud;       // baud rate of channel
+    long            baud;       // baud rate of channel
     p3mode          mode;       // master or slave
     p3state         state;      // communications state
     int             tcount;     // number of timeouts
@@ -187,13 +187,13 @@ typedef struct _p3comms {
     // storage to help with checking rx buffer
     int             peekChar;
 
-	// standard reply storage
-	unsigned char  deviceType[2];
-	unsigned char  manufacturer[MANUFACTURER_STRING_LEN];
-	unsigned char  product_name[PRODUC_TNAME_STRING_LEN];
+    // standard reply storage
+    unsigned char  deviceType[2];
+    unsigned char  manufacturer[MANUFACTURER_STRING_LEN];
+    unsigned char  product_name[PRODUC_TNAME_STRING_LEN];
     unsigned char  serial_number[SERIAL_NUMBER_STRING_LEN];
-	unsigned char  firmware_version[5];
-	unsigned char  hardware_version[3];
+    unsigned char  firmware_version[5];
+    unsigned char  hardware_version[3];
 } p3comms;
 
 
