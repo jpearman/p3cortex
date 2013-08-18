@@ -233,7 +233,7 @@ task serialMasterTask()
                 remote_motor[3] = vexRT[ Ch4 ];
 
                 // Send data for all motors
-                for( i=0;i<9;i++ )
+                for( i=0;i<10;i++ )
                     Cmd_Set_Motors.data[i] = remote_motor[i] + 0x7F;
 
                 P3Command( MyComms, &Cmd_Set_Motors, CORTEX_DEVICE_ID  );
