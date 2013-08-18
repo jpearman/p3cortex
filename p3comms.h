@@ -52,7 +52,9 @@
 #define P3_FAILURE      (-1)
 
 // This can be 1 or 2 on the cortex
+#ifndef P3_MAX_PORTS
 #define P3_MAX_PORTS    1
+#endif
 
 // Most messages are 29 bytes of data to save memory
 #define P3_SMALL_MSG    (32-3)
